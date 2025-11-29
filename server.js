@@ -28,7 +28,7 @@ app.listen(port, () => {
 // Unused variable (lint error)
 
 // Missing semicolon (lint error)
-const x = 5
+const x = 5;
 
 // Console.log in production (lint warning turned error)
 console.log('Debug message');
