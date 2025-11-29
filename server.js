@@ -26,16 +26,14 @@ app.listen(port, () => {
 // Add these intentional lint errors at the end of the file:
 
 // Unused variable (lint error)
-const unusedVariable = "This will fail lint";
 
 // Missing semicolon (lint error)
-const x = 5
+const x = 5;
 
 // Console.log in production (lint warning turned error)
-console.log("Debug message")
+console.log('Debug message');
 
 // Multiple empty lines (lint error)
-
 
 
 // End of file

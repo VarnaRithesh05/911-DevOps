@@ -19,7 +19,7 @@ function createTestServer() {
 describe('Server Configuration Tests', () => {
   test('should use port 3000 by default', () => {
     // Change this to make test fail:
-    expect(PORT).toBe(9999); // <-- Changed from 3000 to 9999 to fail
+    expect(port).toBe(3000); // <-- Changed from 3000 to 9999 to fail
   });
   
   // ...existing code...
