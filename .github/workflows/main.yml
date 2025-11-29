@@ -35,11 +35,11 @@ jobs:
 
       # Step 4: Linting
       - name: 🔍 Run Linting (ESLint)
-        run: npm run lint || echo "⚠️ Linting skipped (no script)"
+        run: npm run lint
 
       # Step 5: Unit Tests
       - name: 🧪 Run Unit Tests
-        run: npm test || echo "⚠️ Tests skipped (no script)"
+        run: npm test
 
       # Step 6: Security Audit
       - name: 🛡️ Security Audit

@@ -60,7 +60,7 @@ app.message(async ({ message, say }) => {
     try {
       const container = docker.getContainer(CONTAINER_NAME);
       await container.restart();
-      await say("✅ *SUCCESS*: System restored. Services are back online.");
+      await say('✅ *SUCCESS*: System restored. Services are back online.');
       console.log('✅ Container restarted successfully');
       wasRunning = true; // Reset monitoring state
     } catch (error) {
@@ -81,7 +81,7 @@ app.event('app_mention', async ({ event, say }) => {
     try {
       const container = docker.getContainer(CONTAINER_NAME);
       await container.restart();
-      await say("✅ *SUCCESS*: System restored. Services are back online.");
+      await say('✅ *SUCCESS*: System restored. Services are back online.');
       console.log('✅ Container restarted successfully');
       wasRunning = true; // Reset monitoring state
     } catch (error) {
