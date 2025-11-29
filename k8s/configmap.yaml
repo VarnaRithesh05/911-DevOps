@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bot-config
+  labels:
+    app: devops-911
+data:
+  alert-channel: "C0A0U7RBBPY"
+  container-name: "devops-911-app"
+  monitoring-interval: "5000"
+  alert-cooldown: "60000"
+  bot-mode: "alert-only"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: devops-911
+data:
+  environment: "production"
+  log-level: "info"

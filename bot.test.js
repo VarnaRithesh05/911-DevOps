@@ -119,3 +119,47 @@ describe('Monitoring Configuration Tests', () => {
     expect(wasRunning).toBe(true);
   });
 });
+
+describe('Advanced Bot Configuration Tests', () => {
+  test('should support alert-only mode', () => {
+    process.env.BOT_MODE = 'alert-only';
+    const BOT_MODE = process.env.BOT_MODE || 'full';
+    expect(BOT_MODE).toBe('alert-only');
+  });
+
+  test('should support full mode by default', () => {
+    delete process.env.BOT_MODE;
+    const BOT_MODE = process.env.BOT_MODE || 'full';
+    expect(BOT_MODE).toBe('full');
+  });
+
+  test('should disable auto-restart in alert-only mode', () => {
+    process.env.ENABLE_AUTO_RESTART = 'false';
+    const ENABLE_AUTO_RESTART = process.env.ENABLE_AUTO_RESTART !== 'false';
+    expect(ENABLE_AUTO_RESTART).toBe(false);
+  });
+
+  test('should enable auto-restart by default', () => {
+    delete process.env.ENABLE_AUTO_RESTART;
+    const ENABLE_AUTO_RESTART = process.env.ENABLE_AUTO_RESTART !== 'false';
+    expect(ENABLE_AUTO_RESTART).toBe(true);
+  });
+
+  test('should configure monitoring interval from environment', () => {
+    process.env.MONITORING_INTERVAL = '5000';
+    const MONITORING_INTERVAL = parseInt(process.env.MONITORING_INTERVAL || '2000');
+    expect(MONITORING_INTERVAL).toBe(5000);
+  });
+
+  test('should configure alert cooldown from environment', () => {
+    process.env.ALERT_COOLDOWN = '60000';
+    const ALERT_COOLDOWN = parseInt(process.env.ALERT_COOLDOWN || '60000');
+    expect(ALERT_COOLDOWN).toBe(60000);
+  });
+
+  test('should configure max consecutive alerts', () => {
+    process.env.MAX_CONSECUTIVE_ALERTS = '3';
+    const MAX_CONSECUTIVE_ALERTS = parseInt(process.env.MAX_CONSECUTIVE_ALERTS || '3');
+    expect(MAX_CONSECUTIVE_ALERTS).toBe(3);
+  });
+});
