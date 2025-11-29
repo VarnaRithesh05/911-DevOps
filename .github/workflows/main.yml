@@ -9,7 +9,6 @@ on:
   workflow_dispatch:  # Allow manual trigger
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/911-devops
   NODE_VERSION: '18'
 
 jobs:
@@ -82,7 +81,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.DOCKER_IMAGE }}
+          images: ${{ secrets.DOCKER_USERNAME }}/911-devops
           tags: |
             type=sha,prefix={{branch}}-
             type=raw,value=latest
@@ -103,7 +102,7 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ *DEPLOYMENT SUCCESS*\n*Pipeline:* CI/CD Completed\n*Branch:* `${{ github.ref_name }}`\n*Image:* `${{ env.DOCKER_IMAGE }}:latest`\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}\n🚀 Ready for deployment!"}' \
+          --data '{"text":"✅ *DEPLOYMENT SUCCESS*\n*Pipeline:* CI/CD Completed\n*Branch:* `${{ github.ref_name }}`\n*Image:* `${{ secrets.DOCKER_USERNAME }}/911-devops:latest`\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}\n🚀 Ready for deployment!"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }} || echo "Slack notification failed"
 
       # Step 7: Notify Failure
