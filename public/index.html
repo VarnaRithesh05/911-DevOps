@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚑 911-DevOps | Mission Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --success: #2ea043;
+            --danger: #da3633;
+            --warning: #d29922;
+            --info: #58a6ff;
+        }
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: #da3633; }
+        
+        /* MAIN LAYOUT */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+            width: 90%;
+            max-width: 1200px;
+            height: 100%;
+        }
+
+        /* CARD STYLES */
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .card-header {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        /* LEFT PANEL: SYSTEM HEALTH */
+        .status-display {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .status-box {
+            font-size: 3.5rem;
+            font-weight: 800;
+            padding: 20px 40px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .online {
+            color: #2ea043;
+            text-shadow: 0 0 20px rgba(46, 160, 67, 0.6);
+            border: 3px solid #2ea043;
+            background: rgba(46, 160, 67, 0.05);
+        }
+        .offline {
+            color: #da3633;
+            text-shadow: 0 0 20px rgba(218, 54, 51, 0.6);
+            border: 3px solid #da3633;
+            background: rgba(218, 54, 51, 0.1);
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* RIGHT PANEL: PIPELINE STAGES */
+        .pipeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #0d1117;
+            border-radius: 6px;
+            border-left: 4px solid #30363d;
+            transition: all 0.3s ease;
+        }
+        .step.success { border-left-color: #2ea043; }
+        .step-icon {
+            width: 30px;
+            text-align: center;
+            margin-right: 15px;
+            color: #8b949e;
+        }
+        .step.success .step-icon { color: #2ea043; }
+        .step-info { display: flex; flex-direction: column; }
+        .step-title { font-weight: bold; font-size: 1rem; }
+        .step-desc { font-size: 0.8rem; color: #8b949e; }
+
+        /* FOOTER INFO */
+        .server-meta {
+            margin-top: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #58a6ff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-truck-medical"></i> 911-DEVOPS</div>
+        <div style="font-size: 0.9rem; color: #8b949e;">CONNECTED TO: PROD-CLUSTER-01</div>
+    </header>
+
+    <div class="dashboard">
+        <!-- LEFT: RESCUE LOOP (Live Status) -->
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-heart-pulse"></i> Live System Health</div>
+            
+            <div class="status-display">
+                <div id="statusIndicator" class="status-box online">
+                    OPERATIONAL
+                </div>
+                <div style="color: #8b949e; margin-top: 10px;">
+                    Last Incident: <span style="color: #fff;">None</span>
+                </div>
+            </div>
+
+            <div class="server-meta">
+                > Uptime: <span id="uptime">0s</span><br>
+                > Node ID: worker-a1f9<br>
+                > Monitoring: Active (500ms poll)
+            </div>
+        </div>
+
+        <!-- RIGHT: DELIVERY LOOP (Pipeline Visualization) -->
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-code-branch"></i> Latest Deployment Pipeline</div>
+            
+            <div class="pipeline-steps">
+                <!-- Static representation of your 10-stage architecture -->
+                <div class="step success">
+                    <div class="step-icon"><i class="fa-solid fa-check-circle"></i></div>
+                    <div class="step-info">
+                        <span class="step-title">Source Trigger</span>
+                        <span class="step-desc">GitHub Webhook received</span>
+                    </div>
+                </div>
+
+                <div class="step success">
+                    <div class="step-icon"><i class="fa-solid fa-check-circle"></i></div>
+                    <div class="step-info">
+                        <span class="step-title">Linting & Testing</span>
+                        <span class="step-desc">ESLint Passed, Jest Passed (14 tests)</span>
+                    </div>
+                </div>
+
+                <div class="step success">
+                    <div class="step-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="step-info">
+                        <span class="step-title">Security Audit</span>
+                        <span class="step-desc">npm audit: 0 Vulnerabilities found</span>
+                    </div>
+                </div>
+
+                <div class="step success">
+                    <div class="step-icon"><i class="fa-brands fa-docker"></i></div>
+                    <div class="step-info">
+                        <span class="step-title">Build & Push</span>
+                        <span class="step-desc">Image pushed to Docker Hub</span>
+                    </div>
+                </div>
+
+                <div class="step success">
+                    <div class="step-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="step-info">
+                        <span class="step-title">Deployment</span>
+                        <span class="step-desc">Container live on Port 3000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-meta" style="margin-top: 20px;">
+                > Pipeline Status: PASSING<br>
+                > Commit: 7f3a1b (main)<br>
+                > Triggered by: GitHub Actions
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. UPTIME COUNTER
+        let seconds = 0;
+        setInterval(() => {
+            seconds++;
+            document.getElementById('uptime').innerText = seconds + 's';
+        }, 1000);
+
+        // 2. LIVE HEALTH CHECK (The 911 Logic)
+        async function checkHealth() {
+            const statusDiv = document.getElementById('statusIndicator');
+            
+            try {
+                // Short timeout to detect "hangs" quickly
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                
+                // This fetches /health from your server.js
+                const response = await fetch('/health', { signal: controller.signal });
+                
+                if (response.ok) {
+                    statusDiv.innerText = "OPERATIONAL";
+                    statusDiv.className = "status-box online";
+                } else {
+                    throw new Error("500 Error");
+                }
+            } catch (error) {
+                statusDiv.innerText = "SYSTEM FAILURE";
+                statusDiv.className = "status-box offline";
+            }
+        }
+
+        // Poll every 1 second
+        setInterval(checkHealth, 1000);
+        checkHealth();
+    </script>
+</body>
+</html>

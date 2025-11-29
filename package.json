@@ -1,0 +1,17 @@
+{
+  "name": "911-devops",
+  "version": "1.0.0",
+  "description": "Emergency DevOps monitoring and recovery system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "bot": "node bot.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.17.0",
+    "docker-modem": "^5.0.6",
+    "dockerode": "^4.0.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  }
+}
