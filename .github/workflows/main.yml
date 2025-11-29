@@ -35,23 +35,40 @@ jobs:
 
       # Step 4: Linting
       - name: 🔍 Run Linting (ESLint)
+        id: lint
         run: npm run lint
+        continue-on-error: true
 
       # Step 5: Unit Tests
       - name: 🧪 Run Unit Tests
+        id: test
         run: npm test
+        continue-on-error: true
 
       # Step 6: Security Audit
       - name: 🛡️ Security Audit
+        id: audit
         run: npm audit --audit-level=moderate || true
 
-      # Step 7: Notify on CI Failure
-      - name: 📢 Notify Slack on CI Failure
-        if: failure()
+      # Step 7: Check for failures and notify
+      - name: 📢 Notify Slack on Lint Failure
+        if: steps.lint.outcome == 'failure'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"🚨 *CI FAILED*: Lint/Test/Security checks failed on branch `${{ github.ref_name }}`\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"}' \
+          --data '{"text":"❌ *LINT FAILED*\n*Project:* 911-DevOps\n*Branch:* `${{ github.ref_name }}`\n*Stage:* Code Linting (ESLint)\n*Commit:* `${{ github.sha }}`\n*Author:* ${{ github.actor }}\n\n🔍 Fix linting errors and push again.\n*View Details:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }} || echo "Slack notification failed"
+
+      - name: 📢 Notify Slack on Test Failure
+        if: steps.test.outcome == 'failure'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ *TESTS FAILED*\n*Project:* 911-DevOps\n*Branch:* `${{ github.ref_name }}`\n*Stage:* Unit Tests\n*Commit:* `${{ github.sha }}`\n*Author:* ${{ github.actor }}\n\n🧪 Fix failing tests and push again.\n*View Details:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }} || echo "Slack notification failed"
+
+      # Step 8: Fail job if lint or test failed
+      - name: ❌ Fail if CI checks failed
+        if: steps.lint.outcome == 'failure' || steps.test.outcome == 'failure'
+        run: exit 1
 
   # Job 2: CD - Build and Push Docker Image
   continuous-delivery:
